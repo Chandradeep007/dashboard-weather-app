@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #eef2f3;
+    }
+
+    header {
+      background: #0077cc;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #005fa3;
+    }
+
+    .weather-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      border-radius: 10px;
+      background: #f5faff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+
+    .weather-card .info {
+      flex: 1;
+    }
+
+    .weather-card img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .weather-card h2 {
+      margin-top: 0;
+    }
+
+    .extras {
+      margin-top: 15px;
+      display: flex;
+      gap: 30px;
+    }
+
+    .extras p {
+      margin: 5px 0;
+    }
+
+    .favourites {
+      margin-top: 20px;
+    }
+
+    .favourites button {
+      background: #e6f2ff;
+      color: #0077cc;
+      margin: 5px 10px 0 0;
+    }
+
+    .favourites button:hover {
+      background: #d0eaff;
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .forecast {
+      margin-top: 30px;
+    }
+
+    .forecast h2 {
+      margin-bottom: 10px;
+    }
+
+    .forecast-cards {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .forecast-card {
+      flex: 1 1 150px;
+      background: #f0f7ff;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .forecast-card img {
+      width: 60px;
+      height: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Weather Dashboard</h1>
+    <p>Check real-time weather and 5-day forecast</p>
+  </header>
+
+  <div class="container">
+
+    <!-- Search Section -->
+    <div class="search-box">
+      <input id="cityInput" type="text" placeholder="Enter city name..." />
+      <button onclick="getWeather()">Search</button>
+    </div>
+
+    <!-- Weather Info Card -->
+    <div class="weather-card" id="weatherCard" style="display: none;">
+      <div class="info">
+        <h2 id="weatherCity">City Name</h2>
+        <p id="weatherDate">Date & Time</p>
+        <div class="extras">
+          <p><strong>Temp:</strong> <span id="weatherTemp">--</span></p>
+          <p><strong>Humidity:</strong> <span id="weatherHumidity">--</span></p>
+          <p><strong>Wind:</strong> <span id="weatherWind">--</span></p>
+        </div>
+      </div>
+      <img id="weatherIcon" src="" alt="Weather Icon">
+    </div>
+
+    <!-- Forecast Section -->
+    <div class="forecast" id="forecastSection" style="display: none;">
+      <h2>5-Day Forecast</h2>
+      <div class="forecast-cards" id="forecastCards">
+        <!-- Forecast cards will be inserted here -->
+      </div>
+    </div>
+
+    <!-- Favourites Section -->
+    <div class="favourites">
+      <div class="section-title">Favourite Cities</div>
+      <button onclick="getWeather('London')">London</button>
+      <button onclick="getWeather('New York')">New York</button>
+      <button onclick="getWeather('Tokyo')">Tokyo</button>
+    </div>
+
+  </div>
+
+  <script>
+    function getWeather(cityFromFav = '') {
+      const input = document.getElementById('cityInput');
+      const city = cityFromFav || input.value.trim();
+
+      if (!city) {
+        alert("Please enter a city name");
+        return;
+      }
+
+      fetch(`weather.php?city=${city}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.cod !== 200) {
+            alert('City not found!');
+            return;
+          }
+
+          document.getElementById('weatherCity').textContent = data.name;
+          document.getElementById('weatherDate').textContent = new Date().toLocaleString();
+          document.getElementById('weatherTemp').textContent = `${data.main.temp}°C`;
+          document.getElementById('weatherHumidity').textContent = `${data.main.humidity}%`;
+          document.getElementById('weatherWind').textContent = `${data.wind.speed} km/h`;
+          document.getElementById('weatherIcon').src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+          document.getElementById('weatherCard').style.display = 'flex';
+
+          if (!cityFromFav) input.value = '';
+
+          getForecast(data.name);
+        })
+        .catch(error => {
+          console.error('Error fetching weather:', error);
+        });
+    }
+
+    function getForecast(city) {
+      fetch(`forecast.php?city=${city}`)
+        .then(response => response.json())
+        .then(data => {
+          const forecastCards = document.getElementById('forecastCards');
+          forecastCards.innerHTML = '';
+
+          for (let i = 0; i < data.list.length; i += 8) {
+            const entry = data.list[i];
+            const date = new Date(entry.dt * 1000);
+            const day = date.toLocaleDateString('en-US', { weekday: 'short' });
+
+            const card = document.createElement('div');
+            card.className = 'forecast-card';
+
+            card.innerHTML = `
+              <h4>${day}</h4>
+              <img src="https://openweathermap.org/img/wn/${entry.weather[0].icon}@2x.png" alt="${entry.weather[0].description}">
+              <p><strong>${entry.main.temp}°C</strong></p>
+              <p>${entry.weather[0].main}</p>
+            `;
+
+            forecastCards.appendChild(card);
+          }
+
+          document.getElementById('forecastSection').style.display = 'block';
+        })
+        .catch(error => {
+          console.error('Error fetching forecast:', error);
+        });
+    }
+  </script>
+
+</body>
+</html>
