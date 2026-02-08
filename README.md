@@ -90,12 +90,12 @@ Document root is /path/to/your/project
 
 ---
 
-## Project Structure![WhatsApp Image 2026-02-08 at 18 38 04](https://github.com/user-attachments/assets/bc4da8c6-a7ac-47ff-bfad-4810dd18e041)
+![WhatsApp Image 2026-02-08 at 18 38 04](https://github.com/user-attachments/assets/bc4da8c6-a7ac-47ff-bfad-4810dd18e041)
 ![WhatsApp Image 2026-02-08 at 18 37 42](https://github.com/user-attachments/assets/ad3b5f08-e141-4701-816f-638c1a1a36fc)
 ![WhatsApp Image 2026-02-08 at 18 37 07 (4)](https://github.com/user-attachments/assets/55c5eae5-31cf-4d25-9e11-c6b07afb2a77)
 ![WhatsApp Image 2026-02-08 at 18 37 07 (2)](https://github.com/user-attachments/assets/3e340e5f-6eb8-4eb4-95ee-2f96f2d2a69a)
 
-
+## Project Structure
 ```text
 .
 ├── index.html         # Main UI (search, weather card, forecast, favourites)
