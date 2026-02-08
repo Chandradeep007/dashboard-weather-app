@@ -1,67 +1,77 @@
-# dashboard-weather-app
-# Weather Dashboard (PHP + OpenWeather API)
+Responsive Weather App
 
-A simple Weather Dashboard that shows **real-time weather** and a **5-day forecast** for any city.
-Frontend is built with **HTML/CSS/JS**, and the backend uses **PHP** to fetch data from the **OpenWeather API**.
+A responsive web application that shows **current weather** and a **5-day forecast** for any city using the OpenWeatherMap API.  
+The app is focuses on **clean UI, responsive layout, and simple testable features**.
 
 ---
 
 ## Features
 
-- Search weather by city name
-- Quick buttons for favourite cities (London / New York / Tokyo)
-- Weather card: temperature, humidity, wind speed, icon
-- 5-day forecast (daily cards)
-- Basic validation (empty input / city not found)
-- Works on desktop and mobile (responsive layout)
+### 1. City Search
+- Search for any city by name using the search bar.
+- Press **Enter** or click the **Search** button to fetch data.
+- If the city is valid, current weather and the 5-day forecast are displayed.
+
+### 2. Current Weather Card
+For the selected city, the app shows:
+
+- City name  
+- Current date & time (from the user’s browser)  
+- Temperature (°C)  
+- Humidity (%)  
+- Wind speed (km/h)  
+- Weather icon (from OpenWeatherMap)  
+
+A **default weather icon** is shown when the page first loads, and it is replaced by the real icon after the first successful API call.
+
+### 3. 5-Day Forecast
+- Forecast data is loaded from the `forecast.php` endpoint.
+- One card per day (5 cards total).
+- Each card includes:
+  - Day name (e.g., Fri, Sat, Sun)
+  - Weather icon
+  - Temperature (°C)
+  - Short description (e.g. *Clouds*, *Rain*, *Clear*).
+
+### 4. Favourite Cities
+- Three default favourite cities: **London**, **New York**, **Tokyo**.
+- After searching a city, you can click **“+ Add current city”** to save it as a favourite.
+- Favourites are rendered as buttons for quick access.
+- Each favourite has a small **`×` (cancel)** button to remove it.
+- Favourites are persisted using **`localStorage`** so they remain after a page refresh.
+
+### 5. Error Handling
+- If the user searches for an invalid city, the app:
+  - Shows a clear error message (e.g. *“City not found. Please try again.”*).
+  - Does not crash or break the layout.
+- Basic network error handling is included in the JavaScript `.catch(...)` blocks for both current weather and forecast.
+
+### 6. Responsive Design
+- Layout is built with **Bootstrap** and custom CSS.
+- On **desktop**, forecast cards are shown in a row; on **mobile**, they stack vertically.
+- The main weather card, search bar, and favourites section all scale to different screen sizes.
+- Tested with Chrome DevTools device modes (e.g. iPhone, iPad, desktop).
 
 ---
 
 ## Tech Stack
 
-- Frontend: HTML, CSS, JavaScript (Fetch API)
-- Backend: PHP (API proxy endpoints)
-- API: OpenWeather (Current Weather + Forecast)
+- **Frontend:** HTML5, CSS3, JavaScript (vanilla), Bootstrap  
+- **Backend / API proxy:** PHP (`weather.php`, `forecast.php`)  
+- **Weather data:** [OpenWeatherMap](https://openweathermap.org/) (Current Weather + 5-Day / 3-Hour Forecast API)  
+- **Storage:** Browser `localStorage` for favourite cities  
+- **Tools:** VS Code, Chrome DevTools
 
 ---
 
 ## Project Structure
 
----
+```text
+.
+├── index.html         # Main UI (search, weather card, forecast, favourites)
+├── weather.php        # PHP endpoint for current weather
+├── forecast.php       # PHP endpoint for 5-day forecast
+└── README.md
 
-## Screenshots (Add yours here)
-
-> Replace the file names/paths after you add screenshots to your repository (example: `screenshots/` folder).
-
-### Desktop View
-![Desktop view](screenshots/desktop.png)
-
-### Mobile View (Responsive)
-![Mobile view](screenshots/mobile.png)
-
-### Forecast Section
-![Forecast section](screenshots/forecast.png)
-
-### Error Case (Invalid City / Empty Input)
-![Error handling](screenshots/error.png)
-
----
-
-## Requirements
-
-- macOS / Windows / Linux
-- PHP installed (recommended PHP 8+)
-- Internet connection (API calls)
-- OpenWeather API Key
-
----
-
-## Setup (OpenWeather API Key)
-
-1. Create a free API key from OpenWeather.
-2. Open `weather.php` and `forecast.php`
-3. Find the API key variable and replace it:
-
-Example:
 ```php
 $apiKey = "YOUR_API_KEY_HERE";
