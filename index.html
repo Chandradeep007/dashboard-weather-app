@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Mobile responsive meta tag :contentReference[oaicite:8]{index=8} -->
-  <!-- Bootstrap CSS (v5) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <title>Weather Dashboard</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/><!-- Mobile responsive meta tag :contentReference[oaicite:8]{index=8} -->
+<!-- Bootstrap CSS (v5) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<title>Weather Dashboard</title>
+<style>
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0; padding: 0;
@@ -79,60 +80,108 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .forecast-card img { width: 60px; height: 60px; }
-  </style>
+
+
+    /* --- Favourites list (single row, responsive wrap) --- */
+    #favList {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .fav-btn {
+      background: #e6f2ff;
+      color: #0077cc;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .fav-btn:hover {
+      background: #d0eaff;
+    }
+    
+    .fav-remove {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: #ffd6d6;
+      color: #b00000;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 700;
+      opacity: 0.5;
+      cursor: pointer;
+      user-select: none;
+      margin-left: 2px;
+    }
+    .fav-btn:hover .fav-remove,
+    .fav-btn:focus-visible .fav-remove {
+      opacity: 1;
+    }
+</style>
 </head>
 <body>
+<header>
+<h1>Weather Dashboard</h1>
+<p>Check real-time weather and 5-day forecast</p>
+</header>
+<div class="container"><!-- Bootstrap container for responsive layout :contentReference[oaicite:9]{index=9} -->
+<!-- Search Section -->
+<div class="search-box row g-2 mb-4"><!-- Made a Bootstrap row with gutters -->
+<div class="col-12 col-sm-9"><!-- Input: full-width on xs, 75% on sm+ -->
+<input class="form-control" id="cityInput" placeholder="Enter city name..." type="text"/>
+</div>
+<div class="col-12 col-sm-3"><!-- Button: full-width on xs, 25% on sm+ -->
+<button class="btn btn-primary w-100" onclick="getWeather()">Search</button>
+</div>
+</div>
+<!-- Weather Info Card -->
+<div class="weather-card d-flex flex-column flex-md-row align-items-center justify-content-between" id="weatherCard" style="display: none;"><!-- Flex column on mobile, row on md+ :contentReference[oaicite:10]{index=10} -->
+<div class="info mb-3 mb-md-0"><!-- Bottom margin on mobile for spacing -->
+<h2 id="weatherCity">City Name</h2>
+<p id="weatherDate">Date &amp; Time</p>
+<div class="extras flex-wrap"><!-- Allow wrap for extra info on narrow screens :contentReference[oaicite:11]{index=11} -->
+<p><strong>Temp:</strong> <span id="weatherTemp">--</span></p>
+<p><strong>Humidity:</strong> <span id="weatherHumidity">--</span></p>
+<p><strong>Wind:</strong> <span id="weatherWind">--</span></p>
+</div>
+</div>
+<img
+  id="weatherIcon"
+  src="https://openweathermap.org/img/wn/01d@2x.png"
+  alt="Default Weather Icon"
+  class="img-fluid"
+/>
+</div>
+<!-- Forecast Section -->
+<div class="forecast" id="forecastSection" style="display: none;">
+<h2>5-Day Forecast</h2>
+<div class="forecast-cards" id="forecastCards">
+<!-- Forecast cards will be inserted here -->
+</div>
+</div>
+<!-- Favourites Section -->
+<div class="favourites">
+<div class="section-title">Favourite Cities</div>
+<!-- All favourites will be rendered here (click city = view, click × = remove) -->
+<div id="favList"></div>
+<!-- Add current searched city to favourites -->
+<button id="addFavBtn" onclick="addCurrentToFavorites()" style="display:none;">➕ Add current city</button>
+</div>
+<script>let currentCity = '';
 
-  <header>
-    <h1>Weather Dashboard</h1>
-    <p>Check real-time weather and 5-day forecast</p>
-  </header>
 
-  <div class="container"><!-- Bootstrap container for responsive layout :contentReference[oaicite:9]{index=9} -->
-
-    <!-- Search Section -->
-    <div class="search-box row g-2 mb-4"><!-- Made a Bootstrap row with gutters -->
-      <div class="col-12 col-sm-9"><!-- Input: full-width on xs, 75% on sm+ -->
-        <input id="cityInput" type="text" class="form-control" placeholder="Enter city name..." />
-      </div>
-      <div class="col-12 col-sm-3"><!-- Button: full-width on xs, 25% on sm+ -->
-        <button class="btn btn-primary w-100" onclick="getWeather()">Search</button>
-      </div>
-    </div>
-
-    <!-- Weather Info Card -->
-    <div class="weather-card d-flex flex-column flex-md-row align-items-center justify-content-between" id="weatherCard" style="display: none;"><!-- Flex column on mobile, row on md+ :contentReference[oaicite:10]{index=10} -->
-      <div class="info mb-3 mb-md-0"><!-- Bottom margin on mobile for spacing -->
-        <h2 id="weatherCity">City Name</h2>
-        <p id="weatherDate">Date & Time</p>
-        <div class="extras flex-wrap"><!-- Allow wrap for extra info on narrow screens :contentReference[oaicite:11]{index=11} -->
-          <p><strong>Temp:</strong> <span id="weatherTemp">--</span></p>
-          <p><strong>Humidity:</strong> <span id="weatherHumidity">--</span></p>
-          <p><strong>Wind:</strong> <span id="weatherWind">--</span></p>
-        </div>
-      </div>
-      <img id="weatherIcon" src="" alt="Weather Icon" class="img-fluid"><!-- Responsive image scaling :contentReference[oaicite:12]{index=12} -->
-    </div>
-
-    <!-- Forecast Section -->
-    <div class="forecast" id="forecastSection" style="display: none;">
-      <h2>5-Day Forecast</h2>
-      <div class="forecast-cards" id="forecastCards">
-        <!-- Forecast cards will be inserted here -->
-      </div>
-    </div>
-
-    <!-- Favourites Section -->
-    <div class="favourites">
-      <div class="section-title">Favourite Cities</div>
-      <button onclick="getWeather('London')">London</button>
-      <button onclick="getWeather('New York')">New York</button>
-      <button onclick="getWeather('Tokyo')">Tokyo</button>
-    </div>
-
-  </div>
-
-  <script>
+    // ------------------------------
+    // Added: Dynamic favourites (localStorage)
+    // Keeps your existing 3 default buttons and adds extra user favourites.
+    // ------------------------------
     function getWeather(cityFromFav = '') {
       const input = document.getElementById('cityInput');
       const city = cityFromFav || input.value.trim();
@@ -142,7 +191,7 @@
         return;
       }
 
-      fetch(`weather.php?city=${city}`)
+      fetch(`weather.php?city=${encodeURIComponent(city)}`)
         .then(response => response.json())
         .then(data => {
           if (data.cod !== 200) {
@@ -160,6 +209,12 @@
           // Show the weather card
           document.getElementById('weatherCard').style.display = 'flex';
 
+          // Added: enable “Add current city” button for favourites
+          currentCity = data.name;
+          const addBtn = document.getElementById('addFavBtn');
+          if (addBtn) addBtn.style.display = 'inline-block';
+
+
           if (!cityFromFav) input.value = '';
 
           getForecast(data.name);
@@ -170,10 +225,23 @@
     }
 
     function getForecast(city) {
-      fetch(`forecast.php?city=${city}`)
+      const forecastCards = document.getElementById('forecastCards');
+      const section = document.getElementById('forecastSection');
+
+      if (section) section.style.display = 'block';
+      if (forecastCards) {
+        forecastCards.innerHTML = '<div class="forecast-message">Loading 5-day forecast...</div>';
+      }
+
+      fetch(`forecast.php?city=${encodeURIComponent(city)}`)
         .then(response => response.json())
         .then(data => {
-          const forecastCards = document.getElementById('forecastCards');
+          if (!data || !Array.isArray(data.list)) {
+            const msg = (data && (data.message || data.error)) ? (data.message || data.error) : 'Forecast unavailable for this city.';
+            forecastCards.innerHTML = `<div class="forecast-message">⚠️ ${msg}</div>`;
+            return;
+          }
+
           forecastCards.innerHTML = '';
 
           for (let i = 0; i < data.list.length; i += 8) {
@@ -193,14 +261,126 @@
 
             forecastCards.appendChild(card);
           }
-
-          document.getElementById('forecastSection').style.display = 'block';
         })
         .catch(error => {
           console.error('Error fetching forecast:', error);
+          forecastCards.innerHTML = '<div class="forecast-message">⚠️ Error fetching forecast. Please try again.</div>';
         });
     }
-  </script>
 
-</body>
+
+    // ==========================================================
+    // Favourites (single list)
+    // - Click city button = view weather
+    // - Click × to remove from favourites
+    // - Stored in localStorage
+    // ==========================================================
+    const FAV_LIST_KEY = "favoritesList";
+    const LEGACY_EXTRA_KEY = "extraFavorites"; // migrate older versions
+    const DEFAULT_FAVS = ["London", "New York", "Tokyo"];
+
+    function normalizeCity(c) {
+      return (c || "").trim();
+    }
+
+    function uniqueCities(list) {
+      const seen = new Set();
+      const out = [];
+      for (const c of list.map(normalizeCity).filter(Boolean)) {
+        const key = c.toLowerCase();
+        if (!seen.has(key)) {
+          seen.add(key);
+          out.push(c);
+        }
+      }
+      return out;
+    }
+
+    function loadFavorites() {
+      // New key
+      const saved = localStorage.getItem(FAV_LIST_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) return uniqueCities(parsed);
+        } catch {}
+      }
+
+      // Migrate from older "extraFavorites"
+      let extras = [];
+      const legacy = localStorage.getItem(LEGACY_EXTRA_KEY);
+      if (legacy) {
+        try {
+          const parsed = JSON.parse(legacy);
+          if (Array.isArray(parsed)) extras = parsed;
+        } catch {}
+      }
+
+      const favs = uniqueCities([...DEFAULT_FAVS, ...extras]);
+      localStorage.setItem(FAV_LIST_KEY, JSON.stringify(favs));
+      // Keep legacy key (optional). You can uncomment next line to delete:
+      // localStorage.removeItem(LEGACY_EXTRA_KEY);
+      return favs;
+    }
+
+    function saveFavorites(list) {
+      localStorage.setItem(FAV_LIST_KEY, JSON.stringify(uniqueCities(list)));
+    }
+
+    function removeFavorite(city) {
+      const favs = loadFavorites().filter(c => c.toLowerCase() !== city.toLowerCase());
+      saveFavorites(favs);
+      renderFavorites();
+    }
+
+    function addCurrentToFavorites() {
+      const city = normalizeCity(currentCity);
+      if (!city) return;
+
+      const favs = loadFavorites();
+      const exists = favs.some(c => c.toLowerCase() === city.toLowerCase());
+      if (exists) {
+        alert("City already in favourites!");
+        return;
+      }
+      favs.push(city);
+      saveFavorites(favs);
+      renderFavorites();
+    }
+
+    function renderFavorites() {
+      const container = document.getElementById("favList");
+      if (!container) return;
+
+      const favs = loadFavorites();
+      container.innerHTML = "";
+
+      favs.forEach(city => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "fav-btn";
+        btn.setAttribute("data-city", city);
+
+        btn.innerHTML = `<span class="fav-text">${city}</span><span class="fav-remove" title="Remove">×</span>`;
+
+        btn.addEventListener("click", (e) => {
+          // If user clicked heart -> remove
+          if (e.target && e.target.closest(".fav-remove")) {
+            e.preventDefault();
+            e.stopPropagation();
+            removeFavorite(city);
+            return;
+          }
+          // Otherwise -> view weather
+          getWeather(city);
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    // Render favourites on page load
+    renderFavorites();
+</script>
+</div></body>
 </html>
