@@ -53,6 +53,32 @@ A **default weather icon** is shown when the page first loads, and it is replace
 - Tested with Chrome DevTools device modes (e.g. iPhone, iPad, desktop).
 
 ---
+### How to Start PHP for backend
+
+Installation & Setup
+0. Check PHP Installation
+Open a terminal in macOS and run:
+php -v
+•	If you see a PHP version (e.g. PHP 8.x.x) → PHP is installed ✅
+•	If you see command not found: php → install PHP (for example with Homebrew):
+brew install php
+Then confirm again with php -v.
+ 
+1. Clone or Download the Project
+git clone https://github.com/<your-username>/<your-repo-name>.git
+cd <your-repo-name>
+Or download as ZIP and extract to a folder.
+
+ 
+2. How to Run the PHP Project (Built-in Server)
+From the project folder in the terminal:
+php -S localhost:8000
+You should see something like:
+PHP Development Server started
+Listening on http://localhost:8000
+Document root is /path/to/your/project
+
+
 
 ## Tech Stack
 
